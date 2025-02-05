@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid"); // Genera un identificador único
 const db = require("./connectionDB");
-const bcrypt = require("bcrypt");
+const bcrypt = require('bcryptjs');
 
 class UserData {
   // Obtener todos los usuarios
