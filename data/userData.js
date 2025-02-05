@@ -22,8 +22,8 @@ class UserData {
             await db.disconnect();
           }
         }
-      }
       
+     
   
   
 //obtener empleados asociados una empresa y rol dependiente
