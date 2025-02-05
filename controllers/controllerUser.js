@@ -1,14 +1,19 @@
+//const PatientData = require("../data/patientData");
 const UserData = require("../data/userData");
+const validateBody = require("../middlewares/validateBody");
+
+
 
 class ControllerUser {
+
   
-  // **Autenticación de usuario**
+  // Autenticación
   async auth(cedula, contrasena) {
     try {
-        // Verificar y eliminar token expirado antes de intentar login
+        //  Verificar y eliminar token expirado antes de intentar login
         await UserData.verificarYEliminarTokenExpirado(cedula);
 
-        const user = await UserData.login(cedula, contrasena); 
+        const user = await UserData.login(cedula, contrasena); // Método estático
 
         if (!user) {
             throw new Error("Credenciales incorrectas");
@@ -18,9 +23,11 @@ class ControllerUser {
         console.error("Error en la autenticación:", error.message);
         throw error;
     }
-  }
+}
 
-  // **Cerrar sesión y eliminar token**
+
+
+  // Método para cerrar sesión y eliminar el token de la base de datos
   async logout(userId) {
     try {
       const result = await UserData.removeToken(userId);
@@ -34,23 +41,27 @@ class ControllerUser {
     }
   }
 
-  // **Cambiar contraseña**
+  // Cambiar de contrasena
   async changeUserPassword(cedula, nuevaContrasena) {
     try {
-        const result = await UserData.changePassword(cedula, nuevaContrasena);
-        if (!result) {
-          throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
-        }
-        return { success: true, message: "Contraseña cambiada con éxito" };
+        const result = await UserData.changePassword(
+        cedula,
+        nuevaContrasena
+      );
+      if (!result) {
+        throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
+      }
+      return { success: true, message: "Contraseña cambiada con éxito" };
     } catch (error) {
-        console.error("Error al cambiar la contraseña:", error.message);
-        throw error;
+      console.error("Error al cambiar la contraseña:", error.message);
+      throw error;
     }
   }
 
-  // **Crear usuario**
+  // Crear usuario
   async insertUser(data) {
     try {
+        // Validación: Cédula y contraseña no pueden estar vacías
         if (!data.id_cedula || data.id_cedula.trim() === "") {
             throw new Error("La cédula es obligatoria.");
         }
@@ -58,26 +69,31 @@ class ControllerUser {
             throw new Error("La contraseña es obligatoria.");
         }
 
+        //  Llamar a la función para crear el usuario en la BD
         const result = await UserData.createUser(data);
 
         return { success: true, id: result };
     } catch (error) {
-        console.error("Error al insertar usuario:", error.message);
-        throw new Error(error.message);
+        console.error(" Error al insertar usuario:", error.message);
+        throw new Error(error.message); // Lanza el error para que el frontend lo reciba
     }
-  }
+}
 
-  // **Obtener todos los usuarios**
+
+  // Obtener todos los usuarios
   async getAllUsers() {
     try {
-      return await UserData.getAllUsers();
+      const users = await UserData.getAllUsers(); // Método estático
+      return users;
     } catch (error) {
       console.error("Error al obtener usuarios:", error.message);
       throw error;
     }
   }
 
-  // **Obtener usuarios por empresa con rol dependiente**
+  //obtener usuarios de una empresa y dependientes
+
+  //  Obtener usuarios por id_empresa y rol = "D"
   async getUsersByEmpresa(id_empresa) {
     try {
         const users = await UserData.getUsersByEmpresaAndRole(id_empresa);
@@ -89,12 +105,12 @@ class ControllerUser {
         console.error("Error en ControllerUser - getUsersByEmpresa:", error.message);
         throw error;
     }
-  }
+}
 
-  // **Obtener un usuario por cédula**
+  // Obtener un usuario por cedula
   async getUserByCedula(cedula) {
     try {
-      const user = await UserData.getUserByCedula(cedula);
+      const user = await UserData.getUserByCedula(cedula); // Método estático
 
       if (!user) {
         throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
@@ -102,29 +118,30 @@ class ControllerUser {
     
       return user;
     } catch (error) {
-      console.error("Error al obtener usuario:", error.message);
+      console.error("Error al obtener usuarios:", error.message);
       throw error;
     }
   }
 
-  // **Eliminar usuario por administrador (permanente)**
-  async deleteUserByADM(cedula) {
-    try {
-      const result = await UserData.deleteUserByADM(cedula);
-      if (!result) {
-        throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
-      }
-      return { success: true, message: "Usuario eliminado con éxito" };
-    } catch (error) {
-      console.error("Error al eliminar usuario", error.message);
-      throw error;
+ // Eliminar usuario por el ADM
+ async deleteUserByADM(cedula) {
+  try {
+    const result = await UserData.deleteUserByADM(cedula); // Método estático
+    if (!result) {
+      throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
     }
+    return { success: true, message: "Usuario eliminado con éxito" };
+  } catch (error) {
+    console.error("Error al eliminar usuario", error.message);
+    throw error;
   }
+}
 
-  // **Eliminar usuario (lógico, desactivación)**
+
+  // Eliminar usuario por cédula
   async deleteUserByCedula(cedula) {
     try {
-      const result = await UserData.deleteUser(cedula);
+      const result = await UserData.deleteUser(cedula); // Método estático
       if (!result) {
         throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
       }
@@ -135,14 +152,18 @@ class ControllerUser {
     }
   }
 
-  // **Actualizar usuario por cédula**
+  // Actualizar usuario por cédula
   async updateUserByCedula(data) {
+
     console.log('Datos enviados al servidor:', data);
     try {
-      const result = await UserData.updateUser(data);
+      
+      const result = await UserData.updateUser(data); // Método estático
       
       if (!result) {
-        throw new Error(`No se encontró un usuario con la cédula ${data.id_cedula}`);
+        throw new Error(
+          `No se encontró un usuario con la cédula ${data.id_cedula}`
+        );
       }
       return { success: true, message: "Usuario actualizado con éxito" };
     } catch (error) {
@@ -150,6 +171,7 @@ class ControllerUser {
       throw error;
     }
   }
+
 }
 
 module.exports = ControllerUser;
