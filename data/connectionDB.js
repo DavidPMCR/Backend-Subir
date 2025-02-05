@@ -3,15 +3,18 @@ const mysql = require("mysql2/promise"); // Importamos la librería para MySQL c
 class ConnectionDB {
     constructor() {
         this.config = {
-            host: "junction.proxy.rlwy.net", // Host de Railway
-            port: 29441,                     // Puerto de conexión
-            user: "root",                    // Usuario de la base de datos
-            password: "ZNlcpmqhXSpyFtMzTGqEhhClUNzbVJjR", // Contraseña de MySQL en Railway
-            database: "railway",             // Nombre de la base de datos en Railway
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0
-        };
+         
+                host: "junction.proxy.rlwy.net",
+                port: 29441,
+                user: "root",
+                password: "ZNlcpmqhXSpyFtMzTGqEhhClUNzbVJjR",
+                database: "maph",  // Cambia "railway" por "maph"
+                waitForConnections: true,
+                connectionLimit: 10,
+                queueLimit: 0
+            };
+            
+        
 
         this.pool = mysql.createPool(this.config); // Creamos un pool de conexiones
     }
