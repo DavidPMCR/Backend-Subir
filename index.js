@@ -18,6 +18,17 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('¡Hola, mundo desde Node.js!');
 });
+//prueba para verificar la conexion de la base datos con render
+app.get('/test-db', async (req, res) => {
+    try {
+        const connection = await db.connect();
+        const [result] = await connection.query("SELECT NOW() as currentTime"); // Verifica la conexión ejecutando una consulta simple
+        await db.disconnect();
+        res.json({ success: true, message: "Conexión exitosa a la base de datos", data: result });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error al conectar a la base de datos", error: error.message });
+    }
+});
 
 // Definir rutas
 const userRouter = require('./routes/userRouter');
