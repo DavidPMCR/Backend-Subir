@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 
 // Definir el puerto dinámicamente
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 8080;
 
 // Crear una sola instancia de express
 const app = express();

@@ -6,3 +6,6 @@ git push origin main
 npm run dev
 
 npm run star
+
+
+public rilawy://  https://backend-subir-production.up.railway.app/
