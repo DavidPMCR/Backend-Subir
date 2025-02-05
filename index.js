@@ -1,11 +1,9 @@
-require('dotenv').config(); // Mueve esto a la primera línea
+require('dotenv').config(); // Cargar variables de entorno al inicio
 const express = require('express');
-const validateBody = require("./middlewares/validateBody");
 const cors = require('cors');
 
-
-
-const PORT = 3001;
+// Definir el puerto dinámicamente
+const PORT = process.env.PORT || 3001;
 
 // Crear una sola instancia de express
 const app = express();
@@ -13,9 +11,8 @@ const app = express();
 // Habilita CORS globalmente para todas las rutas
 app.use(cors());
 
-// Middleware global para manejar JSON y validar el cuerpo de las solicitudes
+// Middleware global para manejar JSON
 app.use(express.json());
-//app.use(validateBody); // Asegúrate de que este middleware sea necesario
 
 // Ruta de prueba
 app.get('/', (req, res) => {
@@ -52,10 +49,11 @@ reportRouter(app);
 
 const sendEmail = require('./routes/sendEmailRouter');
 sendEmail(app);
+
 console.log('Email:', process.env.EMAIL_USER);
 console.log('Password:', process.env.EMAIL_PASS);
 
 // Iniciar el servidor
-app.listen(3001, () => {
-    console.log('Server is running on http://localhost:3001');
-  });
+app.listen(PORT, () => {
+    console.log(`✅ Server is running on port ${PORT}`);
+});
