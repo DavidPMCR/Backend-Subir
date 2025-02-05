@@ -4,8 +4,7 @@ const db = require("./connectionDB");
 const bcrypt = require('bcryptjs');
 
 class UserData {
-  // Obtener todos los usuarios
-  class UserData {
+
     // Obtener todos los usuarios
     static async getAllUsers() {
       const connection = await db.connect();
