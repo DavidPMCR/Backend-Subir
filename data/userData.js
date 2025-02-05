@@ -7,24 +7,18 @@ class UserData {
 
         // Obtener todos los usuarios
         static async getAllUsers() {
-          const connection = await db.connect();
           try {
-            const result = await connection.query(
+            const result = await db.pool.query( // USAR db.pool.query() en vez de connection.query()
               `SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, correo, telefono, rol 
                FROM tbusuario  
                WHERE estado = TRUE`
             );
-            return result.rows;
+            return result.rows; // PostgreSQL devuelve resultados en `rows`
           } catch (error) {
             console.error("Error al obtener usuarios:", error.message);
             throw error;
-          } finally {
-            await db.disconnect();
           }
         }
-      
-     
-  
   
 //obtener empleados asociados una empresa y rol dependiente
   static async getUsersByEmpresaAndRole(id_empresa) {

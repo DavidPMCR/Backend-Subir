@@ -140,13 +140,20 @@ app.route("/user/delete/adm/:cedula").delete(async (req, res) => {
       try {
         const controller = new ControllerUser();
         const users = await controller.getAllUsers();
-        response.data = users;
-        response.code = "200";
+    
+        res.status(200).json({ // Devolver un JSON válido
+          success: true,
+          data: users,
+          code: "200",
+        });
       } catch (error) {
-        response.data = error.message;
-        response.code = "500";
+        res.status(500).json({
+          success: false,
+          message: "Error al obtener usuarios",
+          error: error.message,
+          code: "500",
+        });
       }
-      res.send(response);
     })
     
     // Actualizar usuario por cédula

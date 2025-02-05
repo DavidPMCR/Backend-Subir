@@ -81,15 +81,15 @@ class ControllerUser {
 
 
   // Obtener todos los usuarios
-  async getAllUsers() {
-    try {
-      const users = await UserData.getAllUsers(); // Método estático
-      return users;
-    } catch (error) {
-      console.error("Error al obtener usuarios:", error.message);
-      throw error;
+  
+    async getAllUsers() {
+      try {
+        return await UserData.getAllUsers();
+      } catch (error) {
+        console.error("Error al obtener usuarios:", error.message);
+        throw error;
+      }
     }
-  }
 
   //obtener usuarios de una empresa y dependientes
 
