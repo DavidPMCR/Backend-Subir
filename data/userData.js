@@ -7,22 +7,26 @@ class UserData {
 
     // Obtener todos los usuarios
     static async getAllUsers() {
-      const connection = await db.connect();
-      try {
-        const result = await connection.query(
-          `SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, correo, telefono, rol 
-           FROM tbusuario  
-           WHERE estado = $1`, 
-          [true] // En PostgreSQL, los booleanos deben compararse con `TRUE` en lugar de `1`
-        );
-        return result.rows;
-      } catch (error) {
-        console.error("Error al obtener usuarios:", error.message);
-        throw error;
-      } finally {
-        await db.disconnect();
-      }
-    }
+      class UserData {
+        // Obtener todos los usuarios
+        static async getAllUsers() {
+          const connection = await db.connect();
+          try {
+            const result = await connection.query(
+              `SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, correo, telefono, rol 
+               FROM tbusuario  
+               WHERE estado = TRUE`
+            );
+            return result.rows;
+          } catch (error) {
+            console.error("Error al obtener usuarios:", error.message);
+            throw error;
+          } finally {
+            await db.disconnect();
+          }
+        }
+      
+      
   
   
 //obtener empleados asociados una empresa y rol dependiente
