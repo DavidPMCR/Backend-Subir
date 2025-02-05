@@ -42,49 +42,46 @@ module.exports = new ConnectionDB();*/
 
 //postgrest
 
-const { Pool } = require("pg");
+const { Pool } = require("pg"); // Cliente de PostgreSQL
 
 class ConnectionDB {
     constructor() {
-        this.pool = new Pool({
-            user: "maph_user",
-            password: "af43UWHuYfKzlBoxQoyHdlacVdkIoWK4",
-            host: "dpg-cuh9sgi3esus73fmhc10-a.ohio-postgres.render.com",
-            database: "maph",
-            port: 5432,
+        this.config = {
+            user: process.env.DB_USER || "maph_user",
+            password: process.env.DB_PASSWORD || "af43UWHuYfKzlBoxQoyHdlacVdkIoWK4",
+            host: process.env.DB_HOST || "dpg-cuh9sgi3esus73fmhc10-a.ohio-postgres.render.com",
+            database: process.env.DB_NAME || "maph",
+            port: process.env.DB_PORT || 5432,
             ssl: {
-                rejectUnauthorized: false, // Necesario para conexiones a Render
-            },
-        });
+                rejectUnauthorized: false // Necesario para Render
+            }
+        };
 
-        this.pool.on("connect", () => {
-            console.log("✅ Conexión exitosa a la base de datos PostgreSQL");
-        });
-
-        this.pool.on("error", (err) => {
-            console.error("❌ Error en la conexión a PostgreSQL", err.message);
-        });
+        this.pool = new Pool(this.config); // Pool de conexiones
     }
 
-    async query(text, params) {
+    async connect() {
         try {
-            return await this.pool.query(text, params);
+            const client = await this.pool.connect();
+            console.log("✅ Conexión exitosa a la base de datos PostgreSQL");
+            return client;
         } catch (error) {
-            console.error("❌ Error en consulta SQL:", error.message);
+            console.error(`❌ Error de conexión: ${error.message}`);
             throw error;
         }
     }
 
-    async disconnect() {
+    async disconnect(client) {
         try {
-            await this.pool.end();
-            console.log("🔌 Conexión cerrada con éxito");
+            if (client) {
+                client.release(); // Devuelve la conexión al pool
+                console.log("🔌 Conexión liberada con éxito");
+            }
         } catch (error) {
-            console.error("❌ Error al cerrar la conexión:", error.message);
+            console.error(`❌ Error al cerrar la conexión: ${error.message}`);
         }
     }
 }
 
-// Exportamos una única instancia para usar en toda la app
 module.exports = new ConnectionDB();
 
