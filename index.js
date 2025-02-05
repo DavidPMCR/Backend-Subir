@@ -1,76 +1,61 @@
-require("dotenv").config(); // Cargar variables de entorno
-const express = require("express");
-const cors = require("cors");
-const db = require("./data/connectionDB");
+require('dotenv').config(); // Cargar variables de entorno al inicio
+const express = require('express');
+const cors = require('cors');
 
+// Definir el puerto dinámicamente
 const PORT = process.env.PORT || 10000;
+
+// Crear una sola instancia de express
 const app = express();
 
-// Configurar CORS
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Habilita CORS globalmente para todas las rutas
+app.use(cors());
 
 // Middleware global para manejar JSON
 app.use(express.json());
 
-// Política de seguridad (CSP)
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'");
-    next();
-});
-
 // Ruta de prueba
-app.get("/", (req, res) => {
-    res.send("¡Hola, mundo desde Node.js!");
+app.get('/', (req, res) => {
+    res.send('¡Hola, mundo desde Node.js!');
 });
 
-// Prueba de conexión a la base de datos
-app.get("/test-db", async (req, res) => {
-    try {
-        const connection = await db.connect();
-        const result = await connection.query("SELECT NOW() as currentTime");
-        await db.disconnect(connection);
-        res.json({ success: true, message: "Conexión exitosa a la base de datos", data: result.rows });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error al conectar a la base de datos", error: error.message });
-    }
-});
+
 
 // Definir rutas
-const userRouter = require("./routes/userRouter");
-app.use("/user", userRouter);
+const userRouter = require('./routes/userRouter');
+userRouter(app);
 
 const empresaRouter = require("./routes/empresaRouter");
-app.use("/empresa", empresaRouter);
+empresaRouter(app);
 
 const authRouter = require("./routes/authRouter");
-app.use("/auth", authRouter);
+authRouter(app);
 
-const patientRouter = require("./routes/patientRouter");
-app.use("/paciente", patientRouter);
+const patientRouter = require('./routes/patientRouter');
+patientRouter(app);
 
-const diaryRouter = require("./routes/diaryRouter");
-app.use("/diario", diaryRouter);
+const diaryRouter = require('./routes/diaryRouter');
+diaryRouter(app);
 
-const consultationRouter = require("./routes/consultationRouter");
-app.use("/consulta", consultationRouter);
+const consultationRouter = require('./routes/consultationRouter');
+consultationRouter(app);
 
-const mhRouter = require("./routes/medicalHistoryRouter");
-app.use("/historial", mhRouter);
+const mhRouter = require('./routes/medicalHistoryRouter');
+mhRouter(app);
 
-const fileRouter = require("./routes/fileRouter");
-app.use("/archivo", fileRouter);
+const fileRouter = require('./routes/fileRouter');
+fileRouter(app);
 
-const reportRouter = require("./routes/reportRouter");
-app.use("/reporte", reportRouter);
+const reportRouter = require('./routes/reportRouter');
+reportRouter(app);
 
-const sendEmail = require("./routes/sendEmailRouter");
-app.use("/email", sendEmail);
+const sendEmail = require('./routes/sendEmailRouter');
+sendEmail(app);
 
-// Iniciar servidor
+console.log('Email:', process.env.EMAIL_USER);
+console.log('Password:', process.env.EMAIL_PASS);
+
+// Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`✅ Server is running on port ${PORT}`);
 });

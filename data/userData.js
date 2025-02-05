@@ -8,12 +8,9 @@ class UserData {
   static async getAllUsers() {
     const connection = await db.connect();
     try {
-      const { rows } = await connection.query(
-        "SELECT id_cedula, nombre, apellidos, correo, telefono FROM tbusuario WHERE id_cedula = $1 AND estado = $2",
-        [cedula, true]
+      const [rows] = await connection.query(
+        "SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, correo, telefono, rol FROM tbusuario WHERE estado = TRUE"
       );
-      
-      
       return rows;
     } catch (error) {
       console.error("Error al obtener usuarios:", error.message);
