@@ -19,8 +19,6 @@ app.get('/', (req, res) => {
     res.send('¡Hola, mundo desde Node.js!');
 });
 
-
-
 // Definir rutas
 const userRouter = require('./routes/userRouter');
 userRouter(app);
