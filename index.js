@@ -3,17 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const db = require("./data/connectionDB");
 
-// Ruta de prueba de conexión a la base de datos
-app.get('/test-db', async (req, res) => {
-    try {
-        const connection = await db.connect();
-        const [result] = await connection.query("SELECT NOW() as currentTime");
-        await db.disconnect();
-        res.json({ success: true, message: "Conexión exitosa a la base de datos", data: result });
-    } catch (error) {
-        res.status(500).json({ success: false, message: "Error al conectar a la base de datos", error: error.message });
-    }
-});
 
 // Definir el puerto dinámicamente
 const PORT = process.env.PORT || 10000;
