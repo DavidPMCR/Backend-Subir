@@ -5,9 +5,6 @@ const bcrypt = require('bcryptjs');
 
 class UserData {
 
-    // Obtener todos los usuarios
-    static async getAllUsers() {
-      class UserData {
         // Obtener todos los usuarios
         static async getAllUsers() {
           const connection = await db.connect();
@@ -25,7 +22,7 @@ class UserData {
             await db.disconnect();
           }
         }
-      
+      }
       
   
   
