@@ -1,7 +1,7 @@
 require('dotenv').config(); // Cargar variables de entorno al inicio
 const express = require('express');
 const cors = require('cors');
-const db = require("./data/connectionDB");
+const db = require("../data/connectionDB");
 
 
 // Definir el puerto dinámicamente
