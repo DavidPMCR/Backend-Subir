@@ -9,7 +9,12 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 // Habilita CORS globalmente para todas las rutas
-app.use(cors());
+app.use(cors({
+    origin: "*", // O usa el dominio exacto del frontend
+    methods: "GET,POST,PUT,DELETE",
+    allowedHeaders: "Content-Type, Authorization"
+}));
+
 
 // Middleware global para manejar JSON
 app.use(express.json());

@@ -1,4 +1,4 @@
-const mysql = require("mysql2/promise"); // Importamos la librería para MySQL con promesas
+const mysql = require("mysql2/promise"); //  librería para MySQL 
 
 class ConnectionDB {
     constructor() {
@@ -8,7 +8,7 @@ class ConnectionDB {
                 port: 29441,
                 user: "root",
                 password: "ZNlcpmqhXSpyFtMzTGqEhhClUNzbVJjR",
-                database: "maph",  // Cambia "railway" por "maph"
+                database: "maph",  
                 waitForConnections: true,
                 connectionLimit: 10,
                 queueLimit: 0
