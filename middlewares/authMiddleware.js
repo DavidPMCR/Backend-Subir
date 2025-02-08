@@ -14,13 +14,16 @@ const authMiddleware = async (req, res, next) => {
     const decoded = jwt.verify(token, "clave_secreta_super_segura");
     console.log("✅ Token decodificado correctamente:", decoded);
 
-    const connection = await db.connect();
+    const connection = await db.pool.getConnection(); // 🔹 CORRECCIÓN AQUÍ
+
     const [rows] = await connection.query(
       "SELECT token FROM tbusuario WHERE id_cedula = ?",
       [decoded.id]
     );
+
     const userToken = rows[0]?.token;
-    
+    connection.release(); // 🔹 IMPORTANTE: Liberar la conexión después de usarla.
+
     console.log("🔹 Token en BD:", userToken);
 
     if (!userToken || userToken !== token) {

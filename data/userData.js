@@ -119,7 +119,7 @@ class UserData {
       }
 
       const token = jwt.sign({ id: user.id_cedula, sessionId: uuidv4() }, "clave_secreta_super_segura", {
-        expiresIn: "30m",
+        expiresIn: "1h",
       });
 
       await connection.query("UPDATE tbusuario SET token = ? WHERE id_cedula = ?", [token, cedula]);
