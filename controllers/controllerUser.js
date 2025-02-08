@@ -18,7 +18,8 @@ class ControllerUser {
         if (!user) {
             throw new Error("Credenciales incorrectas");
         }
-        return user;
+        return { user, token };
+
     } catch (error) {
         console.error("Error en la autenticación:", error.message);
         throw error;
