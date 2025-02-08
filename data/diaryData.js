@@ -51,7 +51,7 @@ class DiaryData {
          WHERE tbcita.id_cedula_paciente = ?`,
         [cedula]
       );
-      return rows[0] || null;
+      return rows;
     } catch (error) {
       console.error("❌ Error al obtener cita del paciente:", error.message);
       throw error;
