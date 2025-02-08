@@ -30,10 +30,12 @@ class ControllerUser {
   // Método para cerrar sesión y eliminar el token de la base de datos
   async logout(userId) {
     try {
+      console.log("🔹 Intentando cerrar sesión para usuario:", userId);
       const result = await UserData.removeToken(userId);
       if (!result) {
         throw new Error("Error al eliminar el token de la base de datos");
       }
+      console.log("✅ Token eliminado correctamente.");
       return { success: true };
     } catch (error) {
       console.error("Error en logout:", error.message);
