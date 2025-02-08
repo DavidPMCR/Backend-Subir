@@ -1,9 +1,11 @@
-const connectionDB = require('./connectionDB'); // Asegúrate de que la ruta sea correcta
+const db = require("./connectionDB"); // Asegúrate de que la ruta sea correcta
 
 class FileData {
+  // 📌 Guardar archivo en la base de datos
   static async saveFile(data) {
-    const client = await connectionDB.connect(); // Conecta a la base de datos
+    let connection;
     try {
+      connection = await db.pool.getConnection();
       const { id_empresa, id_cedula, fecha, img1, img2, img3, pdf, detalle } = data;
 
       const query = `
@@ -12,37 +14,32 @@ class FileData {
       `;
       const values = [id_empresa, id_cedula, fecha, img1, img2, img3, pdf, detalle];
 
-      await client.query(query, values);
+      await connection.query(query, values);
+      return { success: true, message: "Archivo guardado correctamente" };
     } catch (error) {
-      console.error('Error saving file:', error.message);
+      console.error("❌ Error al guardar archivo:", error.message);
       throw error;
     } finally {
-      await connectionDB.disconnect(); // Cierra la conexión
+      if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
     }
   }
-//extraer archivos de un paciente por cedula
-static async getFilesByCedula(id_cedula) {
-  const client = await connectionDB.connect(); // Conectar a la base de datos
-  try {
-      const query = `SELECT * FROM tbregistros WHERE id_cedula = ?`; // Buscar por cédula
-      const [results] = await client.query(query, [id_cedula]);
 
-      if (results.length === 0) {
-          return []; // Devuelve un array vacío si no hay registros
-      }
+  // 📌 Obtener archivos por cédula
+  static async getFilesByCedula(id_cedula) {
+    let connection;
+    try {
+      connection = await db.pool.getConnection();
+      const query = `SELECT * FROM tbregistros WHERE id_cedula = ?`;
+      const [results] = await connection.query(query, [id_cedula]);
 
-      return results; // Devuelve todos los registros encontrados
-  } catch (error) {
-      console.error('Error obteniendo archivos:', error.message);
+      return results.length > 0 ? results : []; // Si no hay archivos, retorna un array vacío
+    } catch (error) {
+      console.error("❌ Error al obtener archivos:", error.message);
       throw error;
-  } finally {
-      await connectionDB.disconnect(); // Cerrar la conexión
+    } finally {
+      if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
+    }
   }
-}
-
-
-
-
 }
 
 module.exports = FileData;

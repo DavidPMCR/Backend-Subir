@@ -1,120 +1,99 @@
 const db = require("./connectionDB");
 
-
 class MedicalHistoryData {
-    
-
-
-  
-  // Obtener antecedente de paciente por su cédula
+  // 📌 Obtener historial médico por cédula
   static async getMHByCedula(cedula) {
-    const connection = await db.connect();
+    let connection;
     try {
+      connection = await db.pool.getConnection();
       const [rows] = await connection.query(
-        "SELECT  id_cedula, id_empresa, app, apf, aqx, tx,observaciones FROM tbantecedentes WHERE id_cedula = ? ",
+        `SELECT id_cedula, id_empresa, app, apf, aqx, tx, observaciones 
+         FROM tbantecedentes 
+         WHERE id_cedula = ?`,
         [cedula]
       );
-      return rows[0] || null; // Devuelve el usuario o null si no existe
+      return rows[0] || null; // Devuelve el historial o null si no existe
     } catch (error) {
-      console.error("Error al obtener el paciente:", error.message);
+      console.error("❌ Error al obtener el historial médico:", error.message);
       throw error;
     } finally {
-      await db.disconnect();
+      if (connection) connection.release();
     }
   }
 
- // Crear un nuevo antecedente
-static async createMH(data) {
-  const connection = await db.connect();
-  try {
-    const {
-      id_cedula,
-      id_empresa,
-      app,
-      apf,
-      aqx,
-      tx,
-      observaciones,
-    } = data;
-
-    // Verificar si ya existe un registro para la cédula
-    const [existingRecord] = await connection.query(
-      `SELECT COUNT(*) AS count FROM tbantecedentes WHERE id_cedula = ?`,
-      [id_cedula]
-    );
-
-    // Si ya existe, devolver un mensaje de error
-    if (existingRecord[0].count > 0) {
-      throw new Error("Paciente ya posee un historial médico registrado.");
-    }
-
-    // Insertar el nuevo registro si no existe
-    const [result] = await connection.query(
-      `INSERT INTO tbantecedentes (id_cedula, id_empresa, app, apf, aqx, tx, observaciones)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [id_cedula, id_empresa, app, apf, aqx, tx, observaciones]
-    );
-
-    return result.insertId; // Devuelve el ID del nuevo registro
-  } catch (error) {
-    console.error("Error al crear antecedente:", error.message);
-    throw error; // Lanzar el error para que pueda manejarse externamente
-  } finally {
-    await db.disconnect();
-  }
-}
-
-
-  // Actualizar antecedente
-  static async updateMH(data) {
-    const connection = await db.connect();
+  // 📌 Crear un nuevo historial médico
+  static async createMH(data) {
+    let connection;
     try {
-      const {
-        id_cedula,
-        id_empresa,
-        app,
-        apf,
-        aqx,
-        tx,
-        observaciones
-      } = data;
-  
+      connection = await db.pool.getConnection();
+      const { id_cedula, id_empresa, app, apf, aqx, tx, observaciones } = data;
+
+      // Verificar si ya existe un registro para la cédula
+      const [existingRecord] = await connection.query(
+        `SELECT COUNT(*) AS count FROM tbantecedentes WHERE id_cedula = ?`,
+        [id_cedula]
+      );
+
+      if (existingRecord[0].count > 0) {
+        throw new Error("⚠️ Paciente ya posee un historial médico registrado.");
+      }
+
+      // Insertar el nuevo registro si no existe
+      const [result] = await connection.query(
+        `INSERT INTO tbantecedentes (id_cedula, id_empresa, app, apf, aqx, tx, observaciones)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [id_cedula, id_empresa, app, apf, aqx, tx, observaciones]
+      );
+
+      return result.insertId; // Devuelve el ID del nuevo registro
+    } catch (error) {
+      console.error("❌ Error al crear el historial médico:", error.message);
+      throw error;
+    } finally {
+      if (connection) connection.release();
+    }
+  }
+
+  // 📌 Actualizar historial médico
+  static async updateMH(data) {
+    let connection;
+    try {
+      connection = await db.pool.getConnection();
+      const { id_cedula, app, apf, aqx, tx, observaciones } = data;
+
       const [result] = await connection.query(
         `UPDATE tbantecedentes
          SET app = ?, apf = ?, aqx = ?, tx = ?, observaciones = ?
          WHERE id_cedula = ?`,
-        [app, apf, aqx, tx, observaciones, id_cedula, id_empresa] // Ajustar el orden
+        [app, apf, aqx, tx, observaciones, id_cedula]
       );
-  
+
       return result.affectedRows > 0; // Devuelve true si se actualizó correctamente
     } catch (error) {
-      console.error("Error al actualizar el antecedente:", error.message);
+      console.error("❌ Error al actualizar el historial médico:", error.message);
       throw error;
     } finally {
-      await db.disconnect();
+      if (connection) connection.release();
     }
   }
 
-  // Eliminar antecedente
+  // 📌 Eliminar historial médico
   static async deleteMH(cedula) {
-    const connection = await db.connect();
+    let connection;
     try {
+      connection = await db.pool.getConnection();
       const [result] = await connection.query(
-
-        `DELETE FROM tbantecedentes  WHERE id_cedula = ?`,
+        `DELETE FROM tbantecedentes WHERE id_cedula = ?`,
         [cedula]
       );
       return result.affectedRows > 0; // Devuelve true si se eliminó correctamente
     } catch (error) {
-      console.error("Error al eliminar el antecedente:", error.message);
+      console.error("❌ Error al eliminar el historial médico:", error.message);
       throw error;
     } finally {
-      await db.disconnect();
+      if (connection) connection.release();
     }
   }
-
-  
-
 }
 
 module.exports = MedicalHistoryData;
