@@ -13,18 +13,20 @@ class ControllerUser {
         //  Verificar y eliminar token expirado antes de intentar login
         await UserData.verificarYEliminarTokenExpirado(cedula);
 
-        const user = await UserData.login(cedula, contrasena); // Método estático
+        const result = await UserData.login(cedula, contrasena); // Método estático
 
-        if (!user) {
+        if (!result) {
             throw new Error("Credenciales incorrectas");
         }
-        return { user, token };
 
+        console.log("✅ Usuario autenticado:", result); // 🔹 Verifica que el token se envía
+        return result; // Aquí ya se está devolviendo { user, token }
     } catch (error) {
-        console.error("Error en la autenticación:", error.message);
+        console.error("❌ Error en la autenticación:", error.message);
         throw error;
     }
 }
+
 
 
 
