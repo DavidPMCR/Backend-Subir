@@ -99,7 +99,7 @@ class UserData {
       connection = await db.pool.getConnection();
       const [rows] = await connection.query(
         `SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, telefono, correo, rol, estado, token, contrasena 
-         FROM tbusuario WHERE id_cedula = ?`,
+         FROM tbusuario WHERE id_cedula = ?  AND estado = 1`,
         [cedula]
       );
 
