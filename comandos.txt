@@ -9,3 +9,6 @@ npm run star
 
 
 public rilawy://  https://backend-subir-production.up.railway.app/
+
+
+matar el proceso workbench taskkill /PID 6516 /F

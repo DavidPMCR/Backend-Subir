@@ -108,19 +108,27 @@ const consultationRouter = (app) => {
 
 
     // Obtener todas
-    .get(async (req, res) => {
+    app.route("/consultation/empresa/:idEmpresa").get(async (req, res) => {
+      let response = { data: null, code: "" };
       try {
+        const { idEmpresa } = req.params; // Obtiene el id de empresa de la URL
         const controller = new ControllerConsultation();
-        const consultation = await controller.getAllConsultation();
-        response.data = consultation;
-        response.code = "200";
+        const consultation = await controller.getAllConsultation(idEmpresa);
+    
+        if (consultation.length > 0) {
+          response.data = consultation;
+          response.code = "200";
+        } else {
+          response.data = "No hay consultas para esta empresa";
+          response.code = "404";
+        }
       } catch (error) {
         response.data = error.message;
         response.code = "500";
       }
-     
       res.send(response);
     })
+    
     
     // Actualizar consultation
     .patch(async (req, res) => {

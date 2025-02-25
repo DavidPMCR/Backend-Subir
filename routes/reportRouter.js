@@ -8,8 +8,9 @@ const reportRouter = (app) => {
     };
 
 // Obtener reporte de suma total consultas por mes y año
-app.route("/report/:anio/:mes").get(async (req, res) => {
-    const { anio, mes } = req.params;
+app.route("/report/:anio/:mes/:idEmpresa").get(async (req, res) => {
+  const { anio, mes, idEmpresa } = req.params;
+
   
     // Validación de los parámetros
     if (isNaN(anio) || isNaN(mes) || mes < 1 || mes > 12) {
@@ -24,7 +25,7 @@ app.route("/report/:anio/:mes").get(async (req, res) => {
       ];
   
       const controller = new ControllerReport();
-      const resultado = await controller.reportMontoTotalMensual(anio, mes);
+      const resultado = await controller.reportMontoTotalMensual(anio, mes,idEmpresa);
   
       // Si no se encuentra la empresa, devolver un mensaje de error
       if (!resultado || resultado.length === 0) {
@@ -57,8 +58,9 @@ app.route("/report/:anio/:mes").get(async (req, res) => {
 
 
     //reporte por tipo de consulta mensual + monto total generado entre los tipos
-    app.route("/report/agrupado/:anio/:mes").get(async (req, res) => {
-        const { anio, mes } = req.params;
+    app.route("/report/agrupado/:anio/:mes/:idEmpresa").get(async (req, res) => {
+      const { anio, mes, idEmpresa } = req.params;
+    
       
         // Validación de los parámetros
         if (isNaN(anio) || isNaN(mes) || mes < 1 || mes > 12) {
@@ -68,7 +70,7 @@ app.route("/report/:anio/:mes").get(async (req, res) => {
       
         try {
           const controller = new ControllerReport();
-          const resultado = await controller.reportMontoTotalAgrupado(anio, mes);
+          const resultado = await controller.reportMontoTotalAgrupado(anio, mes,idEmpresa);
       
           // Si no hay resultados, devolver un mensaje de error
           if (!resultado || resultado.length === 0) {

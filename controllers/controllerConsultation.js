@@ -14,16 +14,16 @@ class ControllerConsultation {
   }
 
   // Obtener todas las consultas
-  async getAllConsultation() {
+  async getAllConsultation(idEmpresa) {
     try {
-      const consultation = await ConsultationData.getAllConsultation(); // Método estático, devuelve todos los usuarios (pacientes)
+      const consultation = await ConsultationData.getAllConsultation(idEmpresa);
       return consultation;
     } catch (error) {
-      console.error("Error al obtener pacientes:", error.message);
+      console.error("Error al obtener consultas:", error.message);
       throw error;
     }
   }
-
+  
   // Obtener citas por cedula
   async getConsultationByCedula(cedula) {
     try {

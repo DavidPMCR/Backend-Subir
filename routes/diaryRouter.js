@@ -7,27 +7,28 @@ const diaryRouter = (app) => {
     code: "code",
   };
   
-  //obtener cita por cedula/ ruta api
-  app.route("/diary/:cedula")
-  .get(async (req, res) => {
-    try {
-      const { cedula } = req.params; // Obtiene la cédula de la URL
-      const controller = new ControllerDiary();
-      const user = await controller.getDiaryByCedula(cedula);
+// Obtener citas filtradas por empresa 
+app.route("/diary/empresa/:idEmpresa").get(async (req, res) => {
+  let response = { data: null, code: "" };
+  try {
+    const { idEmpresa } = req.params; // Obtiene el id de empresa de la URL
+    const controller = new ControllerDiary();
+    const diarys = await controller.getAllDiary(idEmpresa);
 
-      if (user) {
-        response.data = user;
-        response.code = "200";
-      } else {
-        response.data = "Usuario no tiene citas";
-        response.code = "404";
-      }
-    } catch (error) {
-      response.data = error.message;
-      response.code = "500";
+    if (diarys.length > 0) {
+      response.data = diarys;
+      response.code = "200";
+    } else {
+      response.data = "No hay citas para esta empresa";
+      response.code = "404";
     }
-    res.send(response);
-  })
+  } catch (error) {
+    response.data = error.message;
+    response.code = "500";
+  }
+  res.send(response);
+});
+
 
  //eliminar paciente por cedula
   app.route("/diary/:id_cita")

@@ -2,33 +2,36 @@ const db = require("./connectionDB");
 
 class DiaryData {
     
-  // 📌 Obtener todas las citas
-  static async getAllDiary() {
-    let connection;
-    try {
-      connection = await db.pool.getConnection(); // 🟢 Obtener conexión del pool
-      const [rows] = await connection.query(
-        `SELECT 
-             tbcita.id_cita AS numero_cita,
-             tbcita.id_cedula_usuario,
-             tbusuario.nombre AS nombre_usuario,
-             tbcita.id_cedula_paciente,
-             tbpaciente.nombre AS nombre_paciente,
-             tbcita.fecha,
-             tbcita.hora_inicio,
-             tbcita.hora_final
-         FROM tbcita
-         INNER JOIN tbusuario ON tbcita.id_cedula_usuario = tbusuario.id_cedula
-         INNER JOIN tbpaciente ON tbcita.id_cedula_paciente = tbpaciente.id_cedula`
-      );
-      return rows;
-    } catch (error) {
-      console.error("❌ Error al obtener citas:", error.message);
-      throw error;
-    } finally {
-      if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
-    }
+ // 📌 Obtener todas las citas de una empresa específica
+static async getAllDiary(idEmpresa) {
+  let connection;
+  try {
+    connection = await db.pool.getConnection(); // 🟢 Obtener conexión del pool
+    const [rows] = await connection.query(
+      `SELECT 
+           tbcita.id_cita AS numero_cita,
+           tbcita.id_cedula_usuario,
+           tbusuario.nombre AS nombre_usuario,
+           tbcita.id_cedula_paciente,
+           tbpaciente.nombre AS nombre_paciente,
+           tbcita.fecha,
+           tbcita.hora_inicio,
+           tbcita.hora_final
+       FROM tbcita
+       INNER JOIN tbusuario ON tbcita.id_cedula_usuario = tbusuario.id_cedula
+       INNER JOIN tbpaciente ON tbcita.id_cedula_paciente = tbpaciente.id_cedula
+       WHERE tbcita.id_empresa = ?`, // 🔎 Filtrar por empresa
+      [idEmpresa]
+    );
+    return rows;
+  } catch (error) {
+    console.error("❌ Error al obtener citas:", error.message);
+    throw error;
+  } finally {
+    if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
   }
+}
+
 
   // 📌 Obtener una cita por cédula de paciente
   static async getDiaryByCedula(cedula) {

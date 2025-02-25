@@ -81,21 +81,28 @@ const patientRouter = (app) => {
   })
 
 
-    // Obtener todos los pacientes
-    .get(async (req, res) => {
-      try {
-        const controller = new ControllerPatient();
-        const users = await controller.getAllUsers();
-        response.data = users;
-        response.code = "200";
-      } catch (error) {
-        response.data = error.message;
-        response.code = "500";
-      }
-     
-      res.send(response);
-    })
-    
+    // Obtener todos los pacientes de una empresa específica
+app.route("/patient/empresa/:idEmpresa").get(async (req, res) => {
+  let response = { data: null, code: "" };
+  try {
+    const { idEmpresa } = req.params; // Obtiene el id de empresa de la URL
+    const controller = new ControllerPatient();
+    const users = await controller.getAllUsers(idEmpresa); // Pasa id_empresa al método
+
+    if (users.length > 0) {
+      response.data = users;
+      response.code = "200";
+    } else {
+      response.data = "No hay pacientes en esta empresa";
+      response.code = "404";
+    }
+  } catch (error) {
+    response.data = error.message;
+    response.code = "500";
+  }
+  res.send(response);
+})
+
     // Actualizar paciente
     .patch(async (req, res) => {
       try {

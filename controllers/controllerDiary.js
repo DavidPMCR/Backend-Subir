@@ -14,15 +14,16 @@ class ControllerDiary {
   }
 
   // Obtener todas las citas
-  async getAllDiary() {
+  async getAllDiary(idEmpresa) {
     try {
-      const diarys = await DiaryData.getAllDiary(); // Método estático, devuelve todas citas 
+      const diarys = await DiaryData.getAllDiary(idEmpresa); // Método con filtro
       return diarys;
     } catch (error) {
       console.error("Error al obtener citas:", error.message);
       throw error;
     }
   }
+  
 
   // Obtener una cita
   async getDiaryByCedula(cedula) {

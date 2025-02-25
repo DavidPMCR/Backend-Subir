@@ -2,7 +2,7 @@ const db = require("./connectionDB");
 
 class ReportData {
   // 📌 Obtener el monto total de consultas por mes
-  static async reportMontoTotalMensual(anio, mes) {
+  static async reportMontoTotalMensual(anio, mes, idEmpresa) {
     let connection;
     try {
       connection = await db.pool.getConnection();
@@ -16,8 +16,9 @@ class ReportData {
          WHERE c.estado = 0
            AND YEAR(c.fecha_consulta) = ?
            AND MONTH(c.fecha_consulta) = ?
+           AND c.id_empresa = ?  -- 🔎 Se filtra por empresa
          GROUP BY e.nombre`,
-        [anio, mes]
+        [anio, mes, idEmpresa]
       );
       return rows;
     } catch (error) {
@@ -28,8 +29,9 @@ class ReportData {
     }
   }
   
+  
   // 📌 Reporte de tipos de consultas realizadas y la suma del monto
-  static async reportMontoTotalAgrupado(anio, mes) {
+  static async reportMontoTotalAgrupado(anio, mes, idEmpresa) {
     let connection;
     try {
       connection = await db.pool.getConnection();
@@ -45,7 +47,7 @@ class ReportData {
              WHERE c2.estado = 0
                AND YEAR(c2.fecha_consulta) = ?
                AND MONTH(c2.fecha_consulta) = ?
-               AND c2.id_empresa = e.id_empresa
+               AND c2.id_empresa = ?
            ) AS total_consultas, 
            (
              SELECT IFNULL(SUM(c2.monto_consulta), 0) 
@@ -53,15 +55,16 @@ class ReportData {
              WHERE c2.estado = 0
                AND YEAR(c2.fecha_consulta) = ?
                AND MONTH(c2.fecha_consulta) = ?
-               AND c2.id_empresa = e.id_empresa
+               AND c2.id_empresa = ?
            ) AS monto_total_mensual 
          FROM tbconsulta c
          INNER JOIN tbempresa e ON c.id_empresa = e.id_empresa
          WHERE c.estado = 0
            AND YEAR(c.fecha_consulta) = ?
            AND MONTH(c.fecha_consulta) = ?
+           AND c.id_empresa = ? -- 🔎 Filtramos por empresa
          GROUP BY e.nombre, c.tipoconsulta`,
-        [anio, mes, anio, mes, anio, mes]
+        [anio, mes, idEmpresa, anio, mes, idEmpresa, anio, mes, idEmpresa]
       );
       return rows;
     } catch (error) {

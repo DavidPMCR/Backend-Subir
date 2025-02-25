@@ -14,15 +14,16 @@ class ControllerPatient {
   }
 
   // Obtener todos los usuarios
-  async getAllUsers() {
+  async getAllUsers(idEmpresa) {
     try {
-      const users = await PatientData.getAllUsers(); // Método estático, devuelve todos los usuarios (pacientes)
+      const users = await PatientData.getAllUsers(idEmpresa); // Ahora recibe el id_empresa
       return users;
     } catch (error) {
       console.error("Error al obtener pacientes:", error.message);
       throw error;
     }
   }
+  
 
   // Obtener un usuario por cedula
   async getUserByCedula(cedula) {

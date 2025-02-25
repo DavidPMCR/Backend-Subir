@@ -2,13 +2,15 @@ const db = require("./connectionDB");
 
 class ConsultationData {
     
-  // 📌 Obtener todas las consultas
-  static async getAllConsultation() {
+  static async getAllConsultation(idEmpresa) {
     let connection;
     try {
-      connection = await db.pool.getConnection(); // 🟢 Obtener conexión del pool
+      connection = await db.pool.getConnection();
       const [rows] = await connection.query(
-        "SELECT id_consulta, id_cedula, id_empresa, tipoconsulta, valoracion, presion_arterial, frecuencia_cardiaca, saturacion_oxigeno, glicemia, frecuencia_respiratoria, plan_tratamiento, fecha_consulta, monto_consulta, estado FROM tbconsulta WHERE estado = 1"
+        `SELECT id_consulta, id_cedula, id_empresa, tipoconsulta, valoracion, presion_arterial, frecuencia_cardiaca, saturacion_oxigeno, glicemia, frecuencia_respiratoria, plan_tratamiento, fecha_consulta, monto_consulta, estado 
+         FROM tbconsulta 
+         WHERE estado = 1 AND id_empresa = ?`, // 🔎 Filtramos por empresa
+        [idEmpresa]
       );
       return rows;
     } catch (error) {
@@ -18,6 +20,7 @@ class ConsultationData {
       if (connection) connection.release();
     }
   }
+  
   
   // 📌 Obtener consultas por cédula de paciente
   static async getConsultationByCedula(cedula) {

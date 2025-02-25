@@ -1,24 +1,25 @@
 const db = require("./connectionDB");
 
 class PatientData {
-  // 📌 Obtener todos los pacientes activos
-  static async getAllUsers() {
+  static async getAllUsers(idEmpresa) {
     let connection;
     try {
       connection = await db.pool.getConnection();
       const [rows] = await connection.query(
         `SELECT id_cedula, tipo_cedula, id_empresa, nombre, apellidos, conocido_como, correo, telefono, telefono_emergencia, residencia, observaciones
          FROM tbpaciente 
-         WHERE estado = 1`
+         WHERE estado = 1 AND id_empresa = ?`, // 🔎 Filtra por empresa
+        [idEmpresa]
       );
       return rows;
     } catch (error) {
       console.error("❌ Error al obtener pacientes:", error.message);
       throw error;
     } finally {
-      if (connection) connection.release(); // Liberar la conexión
+      if (connection) connection.release();
     }
   }
+  
 
   // 📌 Obtener un paciente por cédula
   static async getUserByCedula(cedula) {
