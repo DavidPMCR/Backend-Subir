@@ -28,35 +28,18 @@ class FileData {
   static async getFilesByCedula(id_cedula) {
     let connection;
     try {
-        connection = await db.pool.getConnection();
+      connection = await db.pool.getConnection();
+      const query = `SELECT * FROM tbregistros WHERE id_cedula = ?`;
+      const [results] = await connection.query(query, [id_cedula]);
 
-        // 🔹 Asegurar que `id_registro` se incluya en la consulta
-        const query = `
-            SELECT 
-                id_registro, 
-                id_empresa, 
-                id_cedula, 
-                fecha, 
-                detalle, 
-                img1, 
-                img2, 
-                img3
-            FROM tbregistros 
-            WHERE id_cedula = ?`;
-
-        const [results] = await connection.query(query, [id_cedula]);
-
-        console.log("📌 Datos obtenidos de la BD:", results); // verificar
-
-        return results.length > 0 ? results : [];
+      return results.length > 0 ? results : []; // Si no hay archivos, retorna un array vacío
     } catch (error) {
-        console.error("❌ Error al obtener archivos:", error.message);
-        throw error;
+      console.error("❌ Error al obtener archivos:", error.message);
+      throw error;
     } finally {
-        if (connection) connection.release();
+      if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
     }
-}
-
+  }
   //eliminar archivo existente
   static async deleteFileById(id_registro) {
     let connection;

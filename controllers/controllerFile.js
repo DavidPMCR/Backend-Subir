@@ -41,7 +41,7 @@ async getFilesByCedula(req, res) {
 
       // Convertir imágenes y PDF a base64 y asegurarse de que cada registro sea único
       const response = files.map(file => ({
-          id: file.id,
+          id_registro: file.id_registro, // 🔹 Corrección aquí
           id_empresa: file.id_empresa,
           id_cedula: file.id_cedula,
           fecha: file.fecha,
@@ -60,6 +60,7 @@ async getFilesByCedula(req, res) {
       res.status(500).json({ message: 'Error al obtener los archivos' });
   }
 }
+
 //eliminar archivo
 async deleteFile(id_registro) {
   try {
