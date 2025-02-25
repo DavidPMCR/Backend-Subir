@@ -45,28 +45,17 @@ class FileData {
     let connection;
     try {
         connection = await db.pool.getConnection();
-
-        // 🔹 Validar que `id_registro` sea un número válido
-        if (!id_registro || typeof id_registro !== "number") {
-            throw new Error("ID de registro inválido en la base de datos");
-        }
-
-        console.log(`🗑 Eliminando archivo con ID: ${id_registro}`); // 🔍 Debugging
-
         const query = `DELETE FROM tbregistros WHERE id_registro = ?`;
         const [result] = await connection.query(query, [id_registro]);
 
-        console.log(`✅ Registros eliminados: ${result.affectedRows}`); // 🔍 Debugging
-
-        return result.affectedRows > 0; // `true` si se eliminó, `false` si no se encontró
+        return result.affectedRows > 0; // Devuelve `true` si se eliminó, `false` si no existe
     } catch (error) {
-        console.error("❌ Error al eliminar el archivo en la BD:", error.message);
+        console.error("❌ Error al eliminar el archivo:", error.message);
         throw error;
     } finally {
-        if (connection) connection.release();
+        if (connection) connection.release(); // 🔄 Liberar conexión
     }
 }
-
 
 
 
