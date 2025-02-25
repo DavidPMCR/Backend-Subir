@@ -46,7 +46,7 @@ class FileData {
 
         const [results] = await connection.query(query, [id_cedula]);
 
-        console.log("📌 Datos obtenidos de la BD:", results); // 🔍 Debugging
+        console.log("📌 Datos obtenidos de la BD:", results); // verificar
 
         return results.length > 0 ? results : [];
     } catch (error) {
