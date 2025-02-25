@@ -17,7 +17,10 @@ const fileRouter = (app) => {
   app.get('/api/files/patient/:id_cedula', (req, res) => fileController.getFilesByCedula(req, res));
 
    // Eliminar un archivo de un paciente por `id_registro`
-   app.delete('/api/files/:id_registro', (req, res) => fileController.deleteFile(req, res));
+   app.delete('/api/files/:id_registro', (req, res) => {
+    console.log(`🗑 Recibida solicitud DELETE para id_registro: ${req.params.id_registro}`); // 🔍 Debugging
+    fileController.deleteFile(req, res);
+  });
 
 };
   
