@@ -60,7 +60,20 @@ async getFilesByCedula(req, res) {
       res.status(500).json({ message: 'Error al obtener los archivos' });
   }
 }
-
+//eliminar archivo
+async deleteFile(id_registro) {
+  try {
+      const success = await FileData.deleteFileById(id_registro);
+      if (success) {
+          return { code: "200", message: "Archivo eliminado correctamente" };
+      } else {
+          return { code: "404", message: "Archivo no encontrado" };
+      }
+  } catch (error) {
+      console.error("Error en el controlador al eliminar el archivo:", error.message);
+      throw new Error("Error interno del servidor");
+  }
+}
 
 
 }

@@ -40,6 +40,25 @@ class FileData {
       if (connection) connection.release(); // 🔄 Liberar conexión en lugar de cerrarla
     }
   }
+  //eliminar archivo existente
+  static async deleteFileById(id_registro) {
+    let connection;
+    try {
+        connection = await db.pool.getConnection();
+        const query = `DELETE FROM tbregistros WHERE id_registro = ?`;
+        const [result] = await connection.query(query, [id_registro]);
+
+        return result.affectedRows > 0; // Devuelve `true` si se eliminó, `false` si no existe
+    } catch (error) {
+        console.error("❌ Error al eliminar el archivo:", error.message);
+        throw error;
+    } finally {
+        if (connection) connection.release(); // 🔄 Liberar conexión
+    }
+}
+
+
+
 }
 
 module.exports = FileData;
