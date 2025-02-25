@@ -63,6 +63,12 @@ async getFilesByCedula(req, res) {
 //eliminar archivo
 async deleteFile(id_registro) {
   try {
+      // 🔹 Asegurar que `id_registro` sea un número válido
+      if (!id_registro || typeof id_registro !== "number") {
+          console.error("ID de registro inválido en el controlador:", id_registro);
+          return { code: "400", message: "ID de registro inválido" };
+      }
+
       const success = await FileData.deleteFileById(id_registro);
       if (success) {
           return { code: "200", message: "Archivo eliminado correctamente" };
@@ -70,8 +76,8 @@ async deleteFile(id_registro) {
           return { code: "404", message: "Archivo no encontrado" };
       }
   } catch (error) {
-      console.error("Error en el controlador al eliminar el archivo:", error.message);
-      throw new Error("Error interno del servidor");
+      console.error("❌ Error en el controlador al eliminar el archivo:", error.message);
+      return { code: "500", message: "Error interno del servidor" };
   }
 }
 
