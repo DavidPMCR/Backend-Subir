@@ -221,31 +221,33 @@ static async updateUser(data) {
 }
 
 // 📌 Eliminar un usuario por admin APP (solo dependientes)
+// 📌 Eliminar un usuario dependiente (solo si su rol es "D")
 static async deleteUserByADM(cedula) {
   let connection;
   try {
-      connection = await db.pool.getConnection();
-      console.log("🔹 Intentando eliminar usuario dependiente con cédula:", cedula);
-      
-      const [result] = await connection.query(
-          `DELETE FROM tbusuario WHERE id_cedula = ? AND rol = ?`,
-          [cedula, "D"]
-      );
+    connection = await db.pool.getConnection();
+    console.log("🔹 Intentando eliminar usuario dependiente con cédula:", cedula);
+    
+    const [result] = await connection.query(
+      `DELETE FROM tbusuario WHERE id_cedula = ? AND rol = ?`,
+      [cedula, "D"]
+    );
 
-      if (result.affectedRows > 0) {
-          console.log(`✅ Usuario dependiente ${cedula} eliminado correctamente`);
-          return true;
-      } else {
-          console.warn(`⚠️ No se encontró un usuario dependiente con cédula ${cedula}`);
-          return false;
-      }
+    if (result.affectedRows > 0) {
+      console.log(`✅ Usuario dependiente ${cedula} eliminado correctamente`);
+      return true;
+    } else {
+      console.warn(`⚠️ No se encontró un usuario dependiente con cédula ${cedula}`);
+      return false;
+    }
   } catch (error) {
-      console.error("❌ Error al eliminar el usuario dependiente:", error.message);
-      throw error;
+    console.error("❌ Error al eliminar el usuario dependiente:", error.message);
+    throw error;
   } finally {
-      if (connection) connection.release();
+    if (connection) connection.release(); // Liberar la conexión correctamente
   }
 }
+
 
 // 📌 Eliminar un usuario (actualización de estado)
 static async deleteUser(cedula) {

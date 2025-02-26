@@ -89,26 +89,29 @@ app.route("/user/delete/:cedula").delete(async (req, res) => {
   }
 });
 
-//  RUTA PARA ELIMINACIÓN DEFINITIVA (BORRAR USUARIO DE LA BASE DE DATOS)
+// 📌 RUTA PARA ELIMINACIÓN DEFINITIVA (BORRAR USUARIO DE LA BASE DE DATOS)
 app.route("/user/delete/adm/:cedula").delete(async (req, res) => {
   try {
-    const controller = new ControllerUser();
     const { cedula } = req.params;
 
     if (!cedula) {
       return res.status(400).json({ message: "La cédula es obligatoria" });
     }
 
-    const result = await controller.deleteUserByADM(cedula); // Llamando a la función de eliminación definitiva
-    if (result) {
-      return res.status(200).json({ message: "Usuario eliminado permanentemente" });
+    const controller = new ControllerUser();
+    const result = await controller.deleteUserByADM(cedula); // Llamar función de eliminación
+
+    if (result.success) {
+      return res.status(200).json({ message: result.message });
     } else {
-      return res.status(400).json({ message: "No se pudo eliminar el usuario" });
+      return res.status(404).json({ message: "Usuario no encontrado o ya eliminado" });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Error al eliminar usuario", error: error.message });
+    console.error("❌ Error en el servidor al eliminar usuario:", error.message);
+    return res.status(500).json({ message: "Error interno del servidor", error: error.message });
   }
 });
+
 
 
   app.route("/user")

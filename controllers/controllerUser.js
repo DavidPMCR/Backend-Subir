@@ -128,19 +128,22 @@ class ControllerUser {
     }
   }
 
- // Eliminar usuario por el ADM
- async deleteUserByADM(cedula) {
+// 📌 Controlador para eliminar usuario dependiente por ADM
+async deleteUserByADM(cedula) {
   try {
-    const result = await UserData.deleteUserByADM(cedula); // Método estático
+    const result = await UserData.deleteUserByADM(cedula); // Llamar a la función en el modelo
+
     if (!result) {
-      throw new Error(`No se encontró un usuario con la cédula ${cedula}`);
+      return { success: false, message: `No se encontró un usuario con la cédula ${cedula}` };
     }
+    
     return { success: true, message: "Usuario eliminado con éxito" };
   } catch (error) {
-    console.error("Error al eliminar usuario", error.message);
+    console.error("❌ Error en el controlador al eliminar usuario:", error.message);
     throw error;
   }
 }
+
 
 
   // Eliminar usuario por cédula
