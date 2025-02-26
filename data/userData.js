@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const { v4: uuidv4 } = require("uuid"); // Genera un identificador único
 const db = require("./connectionDB");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");// de java
 
 class UserData {
   // 📌 Obtener todos los usuarios
@@ -196,6 +196,77 @@ class UserData {
       if (connection) connection.release();
     }
   }
+
+  // 📌 Actualizar un usuario
+static async updateUser(data) {
+  let connection;
+  try {
+      connection = await db.pool.getConnection();
+      const { id_cedula, nombre, apellidos, correo, telefono, estado } = data;
+      
+      const [result] = await connection.query(
+          `UPDATE tbusuario
+           SET nombre = ?, apellidos = ?, correo = ?, telefono = ?, estado = ?
+           WHERE id_cedula = ?`,
+          [nombre, apellidos, correo, telefono, estado, id_cedula]
+      );
+
+      return result.affectedRows > 0; // ✅ Devuelve `true` si se actualizó correctamente
+  } catch (error) {
+      console.error("❌ Error al actualizar el usuario:", error.message);
+      throw error;
+  } finally {
+      if (connection) connection.release();
+  }
+}
+
+// 📌 Eliminar un usuario por admin APP (solo dependientes)
+static async deleteUserByADM(cedula) {
+  let connection;
+  try {
+      connection = await db.pool.getConnection();
+      console.log("🔹 Intentando eliminar usuario dependiente con cédula:", cedula);
+      
+      const [result] = await connection.query(
+          `DELETE FROM tbusuario WHERE id_cedula = ? AND rol = ?`,
+          [cedula, "D"]
+      );
+
+      if (result.affectedRows > 0) {
+          console.log(`✅ Usuario dependiente ${cedula} eliminado correctamente`);
+          return true;
+      } else {
+          console.warn(`⚠️ No se encontró un usuario dependiente con cédula ${cedula}`);
+          return false;
+      }
+  } catch (error) {
+      console.error("❌ Error al eliminar el usuario dependiente:", error.message);
+      throw error;
+  } finally {
+      if (connection) connection.release();
+  }
+}
+
+// 📌 Eliminar un usuario (actualización de estado)
+static async deleteUser(cedula) {
+  let connection;
+  try {
+      connection = await db.pool.getConnection();
+      
+      const [result] = await connection.query(
+          `UPDATE tbusuario SET estado = ? WHERE id_cedula = ?`,
+          [0, cedula]
+      );
+
+      return result.affectedRows > 0; // ✅ Devuelve `true` si se "eliminó" (desactivó) correctamente
+  } catch (error) {
+      console.error("❌ Error al eliminar (desactivar) el usuario:", error.message);
+      throw error;
+  } finally {
+      if (connection) connection.release();
+  }
+}
+
 }
 
 module.exports = UserData;

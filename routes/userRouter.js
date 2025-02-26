@@ -51,8 +51,6 @@ app.route("/auth/login").post(async (req, res) => {
   }
 });
 
-
-
 //  RUTA PARA CERRAR SESIÓN Y ELIMINAR TOKEN
 app.route("/auth/logout").post(authMiddleware, async (req, res) => {
   try {
