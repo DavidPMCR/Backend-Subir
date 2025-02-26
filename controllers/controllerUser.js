@@ -28,8 +28,6 @@ class ControllerUser {
 }
 
 
-
-
   // Método para cerrar sesión y eliminar el token de la base de datos
   async logout(userId) {
     try {
