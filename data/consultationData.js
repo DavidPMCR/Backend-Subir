@@ -14,7 +14,7 @@ class ConsultationData {
       );
       return rows;
     } catch (error) {
-      console.error("❌ Error al obtener las consultas:", error.message);
+      console.error(" Error al obtener las consultas:", error.message);
       throw error;
     } finally {
       if (connection) connection.release();
@@ -128,7 +128,7 @@ class ConsultationData {
   
       const [result] = await connection.query(
         `UPDATE tbconsulta
-         SET tipoconsulta = ?, valoracion = ?, presion_arterial = ?, frecuencia_cardiaca = ?, saturacion_oxigeno = ?, glicemia = ?, frecuencia_respiratoria = ?, plan_tratamiento = ?, fecha_consulta = ?, monto_consulta = ?
+         SET tipoconsulta = ?, valoracion = ?, presion_arterial = ?, frecuencia_cardiaca = ?, saturacion_oxigeno = ?, glicemia = ?, frecuencia_respiratoria = ?, plan_tratamiento = ?, fecha_consulta = ?, monto_consulta = ?, estado = 0
          WHERE id_cedula = ? AND id_consulta = ?`,
         [
           tipoconsulta,
