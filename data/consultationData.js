@@ -128,7 +128,7 @@ class ConsultationData {
   
       const [result] = await connection.query(
         `UPDATE tbconsulta
-         SET tipoconsulta = ?, valoracion = ?, presion_arterial = ?, frecuencia_cardiaca = ?, saturacion_oxigeno = ?, glicemia = ?, frecuencia_respiratoria = ?, plan_tratamiento = ?, fecha_consulta = ?, monto_consulta = ?, estado = 0
+         SET tipoconsulta = ?, valoracion = ?, presion_arterial = ?, frecuencia_cardiaca = ?, saturacion_oxigeno = ?, glicemia = ?, frecuencia_respiratoria = ?, plan_tratamiento = ?, fecha_consulta = ?, monto_consulta = ?
          WHERE id_cedula = ? AND id_consulta = ?`,
         [
           tipoconsulta,
